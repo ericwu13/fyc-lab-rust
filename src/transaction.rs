@@ -18,6 +18,10 @@ impl Hashable for Output {
     }
 }
 
+/* TODO: Ownership of transaction (1:1) (alice:10, alice:20, alice:50, alice:30)
+    inputs: alice-50, alice-20
+    outputs: charles-70, fee-10
+ */ 
 pub struct Transaction {
     pub inputs: Vec<Output>,
     pub outputs: Vec<Output>,

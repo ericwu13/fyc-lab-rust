@@ -28,7 +28,11 @@ impl Blockchain {
 
     pub fn update_with_block(&mut self, block: Block) -> Result<(), BlockValidationErr> {
         let i = self.blocks.len();
-
+        
+        /* 
+         *  TODO: What block rules do we have else?
+         *  e.g.: Didn't validate the difficulty of the block
+         */
         if block.index != i as u32 {
             println!("Index mismatch {} != {}", &block.index, &i);
             return Err(BlockValidationErr::MismatchedIndex);
@@ -53,7 +57,10 @@ impl Blockchain {
                 return Err(BlockValidationErr::InvalidGenesisBlockFormat);
             }
         }
-
+        
+        /*
+         * TODO: What transactions rule do we have?
+         */
         if let Some((coinbase, transactions)) = block.transactions.split_first() {
             if !coinbase.is_coinbase() {
                 return Err(BlockValidationErr::InvalidCoinbaseTransaction);
