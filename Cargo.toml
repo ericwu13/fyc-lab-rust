@@ -1,17 +1,9 @@
-[package]
-name = "blockchain-in-rust"
-version = "0.1.0"
-authors = ["Jacob <jacob@geeklaunch.net>"]
-edition = "2018"
+[workspace]
 
-[lib]
-name = "blockchainlib"
-path = "src/lib.rs"
-
-[[bin]]
-name = "blockchain"
-path = "src/main.rs"
-
-[dependencies]
-hex = "0.3.2"
-crypto-hash = "0.3.3"
+members = [
+    "main",
+    "validator",
+    "cli",
+    "miner",
+    "blockchainlib",
+]
