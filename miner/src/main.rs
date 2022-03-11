@@ -1,6 +1,8 @@
 use std::thread;
-use std::net::{TcpListener, TcpStream, Shutdown};
+use std::net::{TcpStream, Shutdown};
+use std::net::{IpAddr, Ipv4Addr};
 use std::io::{Read, Write};
+use solana_net_utils::bind_common;
 
 fn handle_client(mut stream: TcpStream) {
     let mut data = [0 as u8; 50]; // using 50 byte buffer
@@ -26,31 +28,25 @@ fn main() {
     // Get the blockchain from the nodes
     println!("This is miner node!!");
 
-    // start a TCP server
+    let host_v4 = IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1));
+    let port: u16 = 3333;
 
-    let mut host: String = "0.0.0.0".to_owned();
-    let port: &str = ":3333";
-
-    host.push_str(port);
-
-    println!("{}", &host);
-
-    let listener = TcpListener::bind(&host).unwrap();
-
-    for stream in listener.incoming() {
-        match stream {
-            Ok(stream) => {
-                println!("New connection: {}", stream.peer_addr().unwrap());
-                thread::spawn(move || {
-                    // connection succeeded
-                    handle_client(stream);
-                });
+    // start UDP and TCP server
+    if let Ok((sock, listener)) = bind_common(host_v4, port, false) {
+        println!("{:?}, {:?}", sock, listener);
+        for stream in listener.incoming() {
+            match stream {
+                Ok(stream) => {
+                    println!("New connection: {}", stream.peer_addr().unwrap());
+                    thread::spawn(move || {
+                        // connection succeeded
+                        handle_client(stream);
+                    });
+                }
+                Err(e) => {
+                    println!("Error: {}", e);
+                }
             }
-            Err(e) => {
-                println!("Error: {}", e);
-            }
-        }
+        }   println!("{:?}", listener);
     }
-
-    drop(listener);
 }
